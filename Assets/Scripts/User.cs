@@ -5,6 +5,13 @@ using UnityEngine.UI;
 
 public class User : MonoBehaviour
 {
+    public GameObject Tank1;
+    public GameObject Tank2;
+    public GameObject Grid;
+    public GameObject GameUi;
+    public GameObject StartMenu;
+
+
     public Image hpBar;
     public float speed;
     public float rotationSpeed;
@@ -12,6 +19,10 @@ public class User : MonoBehaviour
     public int damage;
     public int sheld;
     public float reload;
+    public Text scoreRed;
+    public Text scoreBlue;
+    public int score1 = 0;
+    public int score2 = 0;
 
     public KeyCode up;
     public KeyCode down;
@@ -22,6 +33,7 @@ public class User : MonoBehaviour
     [SerializeField] GameObject bulletPrefab;
     [SerializeField] float bulletSpeed;
     [SerializeField] Transform posCreatBullet;
+    [SerializeField] private PlayMode2 playMode;
 
     [SerializeField] Color teamColor;
     // Start is called before the first frame update
@@ -36,6 +48,18 @@ public class User : MonoBehaviour
     {
         Move();
         Shoot();
+        if (score1 >= 7 || score2 >= 7)
+        {
+            score1 = 0;
+            score2 = 0;
+            scoreRed.text = "";
+            scoreBlue.text = "";
+            Tank1.SetActive(false);
+            Tank2.SetActive(false);
+            Grid.SetActive(false);
+            GameUi.SetActive(false);
+            StartMenu.SetActive(true);
+        }
     }
     void Move()
     {
@@ -69,12 +93,31 @@ public class User : MonoBehaviour
             sheld = 0;
             hp -= damage;
 
+            hpBar.fillAmount = hp * 0.01f;
             if (hp <= 0f)
             {
-                gameObject.SetActive(false);               
+                gameObject.SetActive(false);
+                if (gameObject.tag == "Player")
+                {
+                    score1++;
+                    scoreBlue.text = score1.ToString();
+                }
+                else
+                {
+                    score2++;
+                    scoreRed.text = score2.ToString();
+                }
+                playMode.StartGameMode2();
             }
         }
     }
+
+    public void Restart(){
+        hp = 100;
+        sheld = 25;
+        hpBar.fillAmount = 100;
+        }
+
     void Shoot()
     {
         if (Input.GetKeyDown(shoot))
@@ -88,4 +131,5 @@ public class User : MonoBehaviour
             clone.GetComponent<SpriteRenderer>().color = teamColor;
         }
     }
+
 }
