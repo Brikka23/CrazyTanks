@@ -27,7 +27,8 @@ public class Bullet : MonoBehaviour
         if (col.gameObject.GetComponent<User>())
         {
             if (col.gameObject!= parent)
-            {    
+            {
+                Destroy(gameObject);
                 col.gameObject.GetComponent<User>().TakeDamage(damage);
             }
         }
